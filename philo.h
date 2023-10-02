@@ -6,7 +6,7 @@
 /*   By: hubrygo <hubrygo@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:30:07 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/09/25 17:16:51 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/01 16:59:11 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 # include <pthread.h>
 # include <string.h>
 
+# define EAT 1
+# define SLEEP 2
+# define THINK 3
+
 typedef struct s_philo
 {
 	int				id;
@@ -27,6 +31,7 @@ typedef struct s_philo
 	int				status;
 	int				is_eating;
 	int				time_to_die;
+	int				fork_available;
 	struct s_data	*data;
 	pthread_t		thread;
 	pthread_mutex_t	lock;
@@ -47,11 +52,13 @@ typedef struct s_data
 	t_philo			*philos;
 	pthread_t		*thread_id;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	lock;
+	pthread_mutex_t	m_dead;
 	pthread_mutex_t	write;
 }				t_data;
 
 int		ft_atoi(const char *str);
 int		ft_init(t_data *data, int argc, char **argv);
+int		ft_sleep(long end, t_data *data);
+long	get_time();
 
 #endif

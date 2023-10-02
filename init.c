@@ -6,7 +6,7 @@
 /*   By: hubrygo <hubrygo@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 17:01:00 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/09/25 18:17:29 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/01 16:57:34 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	ft_init_philo(t_data *data)
 		data->philos[i].is_eating = 0;
 		data->philos[i].id = i + 1;
 		data->philos[i].number_of_meal = 0;
-		data->philos[i].status = 0;
+		data->philos[i].status = THINK;
+		data->philos[i].fork_available = 1;
 		pthread_mutex_init(&data->philos[i].lock, NULL);
 		i++;
 	}
@@ -79,8 +80,8 @@ int	ft_init_data(t_data *data, int argc, char **argv)
 		return (printf("Error: information\n"));
 	data->dead = 0;
 	data->finished = 0;
-	pthread_mutex_init(&data->lock, NULL);
 	pthread_mutex_init(&data->write, NULL);
+	pthread_mutex_init(&data->m_dead, NULL);
 	return (0);
 }
 
