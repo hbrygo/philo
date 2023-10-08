@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubrygo <hubrygo@student.s19.be>           +#+  +:+       +#+        */
+/*   By: hugo <hugo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:27:39 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/01 16:58:43 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/06 14:09:50 by hugo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,54 +28,100 @@
 // les philosophes ont mangé au moins number_of_times_each_philosopher_must_eat
 // fois, la simulation prend fin. Si cet argument n’est pas spécifié, alors la simulation prend fin à la mort d’un philosophe.
 
-// int	ft_eat(t_data *data)
-// {
-// 	int	time;
-
-// 	time = get_time();
-// }
-
-void	*ft_routine(void *v_data)
+void	ft_init_philo(t_philo_state *p)
 {
-	t_data *data;
+	p->thinking = 1;
+	p->state = THINK;
+	if (p->philo->id % 2 == 0)
+		ft_sleep(p->philo->time_to_eat, p);
+	gettimeofday(&p->last_eat, NULL);
+}
 
-	data = (t_data *)v_data;
-	// while (1)
-	// {
-	// 	// if (ft_is_dead(&data->m_dead, &data->dead) == 1)
-	// 	// 	break ;
-	// 	// if (data->philos->status == EAT && ft_eat(data))
-	// 	// 	break ;
-	// 	// else if (data->philos->status == SLEEP && ft_sleep(data))
-	// 	// 	break ;
-	// 	// else if (data->philos->status == THINK && ft_think(data))
-	// 	// 	break ;
-	// 	// if (ft_dead(data))
-	// 	// 	break ;
-	// }
-	// ft_philo_end(data);
-	return (0);
-	/*faire les routines et ne pas oublier de mutex_lock / mutex_unloch a chaque fois les fork*/
+void	*ft_routine(void *v_philo)
+{
+	t_philo_state	p;
+
+	p.philo = (t_philo *)v_philo;
+	ft_init_philo(&p);
+	while (1)
+	{
+		if (ft_is_dead(p.philo->mut_dead, p.philo->death))
+			break ;
+		if (ft_eat(&p))
+			break;
+		if (philo_sleep(&p))
+			break;
+		if (ft_think(&p))
+			break;
+		if (ft_death(&p))
+			break ;
+	}
+	return (NULL);
+}
+
+static int	ft_watchdog(t_philo_param *philo)
+{
+	int	ret;
+
+	ret = 0;
+	while (1)
+	{
+		if (pthread_mutex_lock(&philo->mut_dead_param))
+			break ;
+		if (philo->death == 1)
+			ret = 1;
+		pthread_mutex_unlock(&philo->mut_dead_param);
+		if (ret == 1)
+			break ;
+		usleep(100);
+	}
+	return (1);
+}
+
+int	ft_philo_destructor(t_philo_param *ptr, int ret)
+{
+	int	i;
+
+	i = 0;
+	while (ptr->philos && ptr->philos[i].id)
+		if (pthread_mutex_destroy(&ptr->philos[i++].fork))
+			ret = 1;
+	if (pthread_mutex_destroy(&ptr->printing))
+		ret = 1;
+	if (pthread_mutex_destroy(&ptr->mut_dead_param))
+		ret = 1;
+	free(ptr->philos);
+	free(ptr->thread_p);
+	return (ret);
 }
 
 int	main(int argc, char **argv)
 {
-	t_data	data;
-	int		i;
+	t_philo_param	p;
+	int				i;
 
-	i = 0;
-	if (argc != 5 && argc != 6)
-		return (printf("Error: Argument\n"));
-	if (ft_init(&data, argc, argv) != 0)
+	p.start = get_time();
+	i = -1;
+	if (ft_init(&p, argc, argv) == -1)
 		return (1);
-	while (i < data.nb_of_philo)
+	p.philos = ft_create_philo(&p, 0);
+	while (++i < p.nb_philo && p.philos)
 	{
-		if (pthread_create(&data.thread_id[i], NULL, ft_routine, (void *)&data.philos[i]))
+		if (i == p.nb_philo)
+			p.philos[i].next = &p.philos[0];
+		p.philos[i].next = &p.philos[i + 1];
+		if (pthread_create(&p.thread_p[i], NULL, ft_routine,
+				(void *)&p.philos[i]))
 			break ;
-		i++;
 	}
-	/*join tout les thread si nb_of_meal != 0*/
-	/*detach tout les thread si nb_of_meal == 0*/
-	ft_sleep(1000, &data);
-	return (0);
+	i = 0;
+	while (i < p.nb_philo && p.nb_to_eat != -1 && p.philos)
+		if (pthread_join(p.thread_p[i++], NULL))
+			return (ft_philo_destructor(&p, 1));
+	while (i < p.nb_philo && p.nb_to_eat == -1 && p.philos)
+		if (pthread_detach(p.thread_p[i++]))
+			return (ft_philo_destructor(&p, 1));
+	if (p.philos && p.nb_to_eat == -1 && ft_watchdog(&p))
+		i = 0;
+	return (ft_philo_destructor(&p, (!p.philos)));
 }

@@ -2,7 +2,11 @@ SRCS    =	main.c \
 			ft_atoi.c \
 			init.c \
 			sleep.c \
-			
+			eat.c \
+			utils.c \
+			philo_sleep.c \
+			think.c \
+			death.c
 
 OBJS    = ${SRCS:.c=.o}
 INCS    = includes
@@ -24,16 +28,6 @@ clean:
 
 fclean: clean
 	${RM} ${NAME}
-
-compile:
-	${CC} -fsanitize=address -g ${CFLAGS} -o ${NAME} ${SRCS} ${c} && ./push_swap 1 2 3
-
-c:
-	${RM} *.o printf/*.o 19_libft/*.o
-
-C:
-	${RM} ${c} push_swap push_swap.dSYM
-
 
 re: fclean all
 
