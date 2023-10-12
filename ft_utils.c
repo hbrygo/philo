@@ -1,16 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubrygo <hubrygo@student.s19.be>           +#+  +:+       +#+        */
+/*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/04 14:27:21 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/09/25 13:29:41 by hubrygo          ###   ########.fr       */
+/*   Created: 2023/10/11 17:32:10 by hubrygo           #+#    #+#             */
+/*   Updated: 2023/10/12 15:07:49 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+time_t	get_time(void)
+{
+	static struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+void	ft_sleep(time_t end, t_rules *rules)
+{
+	time_t	wake_up;
+
+	wake_up = get_time() + end;
+	while (!(rules->dead))
+	{
+		if (get_time() >= wake_up)
+			break ;
+		usleep(50);
+	}
+}
+
+void	ft_mut_print(int id, t_rules *rules, char *str)
+{
+	pthread_mutex_lock(&rules->state_write);
+	if (!rules->dead)
+		printf("%ld %d %s\n", get_time() - rules->start_time, id + 1, str);
+	pthread_mutex_unlock(&rules->state_write);
+}
 
 static int	skip(char *str)
 {

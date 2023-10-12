@@ -1,19 +1,14 @@
-SRCS    =	main.c \
-			ft_atoi.c \
-			init.c \
-			sleep.c \
-			eat.c \
-			utils.c \
-			philo_sleep.c \
-			think.c \
-			death.c
+SRCS	=	main.c \
+			ft_init.c \
+			ft_utils.c \
+			ft_routine.c
 
-OBJS    = ${SRCS:.c=.o}
-INCS    = includes
-NAME    = philo
-CC        = gcc
-RM        = rm -rf
-CFLAGS    = -Wall -Wextra -Werror -fsanitize=address -g
+OBJS	= ${SRCS:.c=.o}
+INCS	= includes
+NAME	= philo
+CC		= gcc
+RM		= rm -rf
+CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g
 
 .c.o:
 		${CC} ${CFLAGS} -c $< -o ${<:.c=.o} -I ${INCS}

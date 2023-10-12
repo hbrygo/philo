@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hugo <hugo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/25 11:30:07 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/06 14:08:41 by hugo             ###   ########.fr       */
+/*   Created: 2023/10/12 15:10:23 by hubrygo           #+#    #+#             */
+/*   Updated: 2023/10/12 15:10:24 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,69 +19,42 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <string.h>
+# include <stdatomic.h>
 
-# define EAT 1
-# define SLEEP 2
-# define THINK 3
-# define DEATH 4
+# define SUCCESS 0
+# define FAILURE 1
 
-typedef struct s_philo
+typedef struct s_philosopher
 {
-	int						nb_philo;
-	int						time_to_die;
-	int						time_to_eat;
-	int						time_to_sleep;
-	int						nb_of_meal;
-	int						id;
-	int						*death;
-	long					start_time;
-	struct s_philo			*next;
-	pthread_mutex_t			fork;
-	pthread_mutex_t			*printing;
-	pthread_mutex_t			*mut_dead;
-}					t_philo;
+	int					id;
+	atomic_int			is_fed;
+	int					left_fork_id;
+	int					right_fork_id;
+	time_t				t_last_meal;
+	struct s_rules		*rules;
+	pthread_t			thread_id;
+}						t_philosopher;
 
-typedef struct s_philo_param
+typedef struct s_rules
 {
-	int				nb_philo;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				death;
-	int				nb_to_eat;
-	long			start;
-	t_philo			*philos;
-	pthread_t		*thread_p;
-	pthread_mutex_t	printing;
-	pthread_mutex_t	mut_dead_param;
-}					t_philo_param;
+	int					nb_philo;
+	long				time_to_die;
+	long				time_to_eat;
+	long				time_to_sleep;
+	int					nb_meals;
+	atomic_int			all_fed;
+	time_t				start_time;
+	atomic_int			dead;
+	pthread_mutex_t		state_write;
+	pthread_mutex_t		*forks;
+	t_philosopher		*p;
+}						t_rules;
 
-typedef struct s_philo_state
-{
-	int				state;
-	int				thinking;
-	int				thinking_ret;
-	struct timeval	last_eat;
-	struct timeval	end;
-	t_philo			*philo;
-	t_philo			*right_philo;
-	t_philo_param	p_param;
-}					t_philo_state;
-
-int				ft_atoi(const char *str);
-int				ft_init(t_philo_param *philo, int argc, char **argv);
-int				ft_sleep(int end, t_philo_state *p);
-long			get_time();
-t_philo			*ft_create_philo(t_philo_param *philo_param, int i);
-int				ft_mut_print(int id, char *str, pthread_mutex_t *print, long start);
-int				ft_eat(t_philo_state *p);
-int				ft_is_dead(pthread_mutex_t *mut_dead, int	*status);
-int				ft_philo_releaser(pthread_mutex_t *fork, int *state_of_fork,
-int 			*total_fork);
-int				philo_sleep(t_philo_state *p);
-int				ft_think(t_philo_state *p);
-int				ft_death(t_philo_state *p);
-unsigned long	to_u_long(struct timeval tv);
-int				ft_calcul(struct timeval start, struct timeval end);
+int		ft_init(int argc, char **argv, t_rules *rules);
+int		ft_atoi(const char *str);
+time_t	get_time(void);
+void	ft_sleep(time_t end, t_rules *rules);
+void	ft_mut_print(int id, t_rules *rules, char *str);
+void	*ft_routine(void *p_void);
 
 #endif
