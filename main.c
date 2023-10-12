@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 15:04:24 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/12 15:09:33 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/12 17:12:25 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,15 @@ void	ft_exit(t_rules *rules)
 	int	i;
 
 	i = -1;
-	while (++i < rules->nb_philo)
+	while (rules->p && ++i < rules->nb_philo)
 		pthread_join(rules->p[i].thread_id, NULL);
+	if (rules->all_fed)
+	{
+		i = -1;
+		while (++i < rules->nb_philo)
+			printf("\033[35;01mphilo %d has eaten %d times\n", \
+				i + 1, rules->p[i].is_fed + 1);
+	}
 	i = -1;
 	while (++i < rules->nb_philo)
 		pthread_mutex_destroy(&rules->forks[i]);
@@ -67,14 +74,12 @@ int	ft_only_one(t_rules *rules)
 int	main(int argc, char **argv)
 {
 	t_rules			rules;
-	int				ret;
 	int				i;
 
-	ret = 0;
 	if (argc != 5 && argc != 6)
 		return (1);
 	if (ft_init(argc, argv, &rules) == 1)
-		return (1);
+		return (ft_exit(&rules), 1);
 	i = 0;
 	rules.start_time = get_time();
 	if (rules.nb_philo == 1)
@@ -83,10 +88,10 @@ int	main(int argc, char **argv)
 	{
 		if (pthread_create(&rules.p[i].thread_id, NULL, 
 				ft_routine, (void *)&rules.p[i]))
-			return (1);
+			return (ft_exit(&rules), 1);
 		i++;
 	}
 	ft_is_dead(&rules);
 	ft_exit(&rules);
-	return (ret);
+	return (0);
 }
