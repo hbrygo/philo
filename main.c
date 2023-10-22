@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 15:04:24 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/12 17:12:25 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/22 14:02:10 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,6 @@ void	ft_exit(t_rules *rules)
 	i = -1;
 	while (rules->p && ++i < rules->nb_philo)
 		pthread_join(rules->p[i].thread_id, NULL);
-	if (rules->all_fed)
-	{
-		i = -1;
-		while (++i < rules->nb_philo)
-			printf("\033[35;01mphilo %d has eaten %d times\n", \
-				i + 1, rules->p[i].is_fed + 1);
-	}
-	i = -1;
 	while (++i < rules->nb_philo)
 		pthread_mutex_destroy(&rules->forks[i]);
 	pthread_mutex_destroy(&rules->state_write);

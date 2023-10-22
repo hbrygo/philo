@@ -8,7 +8,7 @@ INCS	= includes
 NAME	= philo
 CC		= gcc
 RM		= rm -rf
-CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS	= -Wall -Wextra -Werror -fsanitize=thread -g
 
 .c.o:
 		${CC} ${CFLAGS} -c $< -o ${<:.c=.o} -I ${INCS}
@@ -26,4 +26,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean compile c C re
+.PHONY: all clean fclean re

@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 15:10:23 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/12 17:20:06 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/22 14:07:29 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef struct s_philosopher
 	atomic_int			is_fed;
 	int					left_fork_id;
 	int					right_fork_id;
-	time_t				t_last_meal;
+	atomic_long			t_last_meal;
 	struct s_rules		*rules;
 	pthread_t			thread_id;
 }						t_philosopher;
@@ -41,7 +41,7 @@ typedef struct s_rules
 	long				time_to_die;
 	long				time_to_eat;
 	long				time_to_sleep;
-	int					nb_meals;
+	atomic_int			nb_meals;
 	atomic_int			all_fed;
 	time_t				start_time;
 	atomic_int			dead;
