@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 17:32:10 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/12 15:07:49 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/22 18:44:51 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_sleep(time_t end, t_rules *rules)
 	{
 		if (get_time() >= wake_up)
 			break ;
-		usleep(50);
+		usleep(2 * rules->nb_philo);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 15:04:24 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/22 14:02:10 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/22 18:46:52 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,8 @@ void	ft_is_dead(t_rules *rules)
 			{
 				ft_mut_print(i, rules, "is dead");
 				rules->dead = 1;
-				ft_sleep(100, rules);
 				return ;
 			}
-			ft_sleep(100, rules);
 		}
 		i = 0;
 		while (rules->nb_meals != -1 && i < rules->nb_philo

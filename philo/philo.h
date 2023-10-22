@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 15:10:23 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/22 14:07:29 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/22 18:40:40 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 # include <pthread.h>
 # include <string.h>
 # include <stdatomic.h>
-
-# define SUCCESS 0
-# define FAILURE 1
 
 typedef struct s_philosopher
 {
