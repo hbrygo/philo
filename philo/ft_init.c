@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 17:03:54 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/22 19:23:24 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/23 13:59:54 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,14 @@ int	ft_init_mutex(t_rules *rules)
 	{
 		if (pthread_mutex_init(&rules->forks[i], NULL))
 		{
-			free(rules->forks);
+			ft_destroy_fork(i, rules);
 			return (1);
 		}
 		i++;
 	}
 	if (pthread_mutex_init(&(rules->state_write), NULL))
 	{
-		free(rules->forks);
+		ft_destroy_fork(rules->nb_philo, rules);
 		return (1);
 	}
 	return (0);
@@ -89,7 +89,7 @@ void	ft_init_philo(t_rules *rules)
 
 int	ft_init(int argc, char **argv, t_rules *rules)
 {
-	if (ft_check_arg(argc, argv) == -1)
+	if (ft_check_arg(argc, argv) == 1)
 		return (1);
 	rules->nb_philo = ft_atoi(argv[1]);
 	rules->time_to_die = ft_atoi(argv[2]);
@@ -101,11 +101,11 @@ int	ft_init(int argc, char **argv, t_rules *rules)
 	if (ft_verif_input(rules, argc) == 1)
 		return (1);
 	if (ft_init_mutex(rules) == 1)
-		return (1);
+		return (2);
 	rules->all_fed = 0;
 	rules->dead = 0;
 	ft_init_philo(rules);
 	if (!rules->p)
-		return (1);
+		return (3);
 	return (0);
 }

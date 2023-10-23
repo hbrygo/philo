@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 17:46:05 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/12 15:07:24 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/23 14:08:22 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	*ft_routine(void *p_void)
 	rules = p->rules;
 	p->t_last_meal = rules->start_time;
 	if (p->id % 2)
-		ft_sleep(100, rules);
+		ft_sleep(10, rules);
 	while (rules->dead != 1)
 	{
 		ft_eat(p, p->id);

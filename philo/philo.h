@@ -6,7 +6,7 @@
 /*   By: hubrygo < hubrygo@student.s19.be>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 15:10:23 by hubrygo           #+#    #+#             */
-/*   Updated: 2023/10/22 18:40:40 by hubrygo          ###   ########.fr       */
+/*   Updated: 2023/10/23 14:00:06 by hubrygo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,6 @@ time_t	get_time(void);
 void	ft_sleep(time_t end, t_rules *rules);
 void	ft_mut_print(int id, t_rules *rules, char *str);
 void	*ft_routine(void *p_void);
+void	ft_destroy_fork(int end, t_rules *rules);
 
 #endif
